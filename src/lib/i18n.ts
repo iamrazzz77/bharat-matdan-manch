@@ -1,0 +1,230 @@
+export type Language = "en" | "hi";
+
+export const translations = {
+  en: {
+    platformName: "India Digital Election Platform",
+    platformSubtitle: "Bharat Matdan Manch - Secure, Anonymous & Transparent Digital Voting",
+    demoBanner: "DEMO SYSTEM ONLY — Fictional Data. Not affiliated with the Election Commission of India.",
+    nav: {
+      home: "Home",
+      results: "Live Results & Map",
+      voterPortal: "Voter Portal",
+      officerPortal: "Polling Officer Portal",
+      adminPortal: "Admin Dashboard",
+      login: "Login / Verify",
+      register: "Register EPIC",
+      logout: "Logout"
+    },
+    hero: {
+      badge: "18th Lok Sabha General Elections 2026",
+      title: "Empowering 950+ Million Indian Citizens with Digital Integrity",
+      description: "Secret-ballot digital voting workflow featuring multi-factor voter authorization, interactive VVPAT print demo verification, double-vote prevention lock, and real-time constituency analytics.",
+      checkEligibility: "Check EPIC Eligibility",
+      castVoteNow: "Cast Digital Ballot",
+      viewLiveResults: "View Live Results & Map"
+    },
+    stats: {
+      registeredVoters: "95.4 Crore",
+      registeredLabel: "Registered Eligible Voters",
+      activeElections: "543",
+      constituenciesLabel: "Parliamentary Constituencies",
+      pollingBooths: "10.5 Lakh",
+      boothsLabel: "Verified Polling Booths",
+      currentTurnout: "67.8%",
+      turnoutLabel: "National Voter Turnout"
+    },
+    voter: {
+      title: "Digital Voter Identity Portal",
+      epicCardTitle: "Elector Photo Identity Card (EPIC)",
+      epicNumber: "EPIC Number",
+      aadhaarHash: "Aadhaar Linked",
+      constituency: "Constituency",
+      state: "State / UT",
+      pollingStation: "Assigned Polling Station",
+      boothNo: "Booth Number",
+      status: "Eligibility Status",
+      eligible: "Eligible to Vote",
+      alreadyVoted: "Ballot Cast & Hash Verified",
+      castBallotBtn: "Proceed to Digital Ballot",
+      viewReceiptBtn: "Download Voting Receipt",
+      vvpatReceiptTitle: "Cryptographic Vote Receipt",
+      receiptHash: "Receipt Hash Code",
+      pollingType: "Voting Channel",
+      timestamp: "Timestamp"
+    },
+    ballot: {
+      title: "Official Digital Ballot Paper",
+      instructions: "Press the VOTE button corresponding to your chosen candidate. Your vote is secret, anonymous, and encrypted.",
+      candidateName: "Candidate Name",
+      partyName: "Political Party",
+      symbol: "Symbol",
+      serialNo: "Sr. No.",
+      voteBtn: "VOTE",
+      notaName: "NONE OF THE ABOVE (NOTA)",
+      notaDesc: "Option for voters who do not wish to vote for any candidate.",
+      confirmTitle: "Confirm Your Ballot Selection",
+      confirmMsg: "You have selected:",
+      confirmWarning: "Once submitted, your vote will be securely recorded in the secret ballot archive and cannot be altered or undone.",
+      confirmSubmit: "Confirm & Cast Ballot",
+      cancel: "Change Selection"
+    },
+    vvpat: {
+      title: "VVPAT Verification Unit (Demo)",
+      printing: "Printing electronic ballot paper slip...",
+      showing: "Verifying candidate slip through transparent glass (7 Seconds)...",
+      dropped: "Slip safely dropped into sealed compartment box.",
+      receiptGenerated: "Vote Recorded Successfully! Cryptographic Receipt Generated."
+    },
+    results: {
+      title: "Official Live Election Results & Turnout Map",
+      nationalTally: "National Party Tally (Majority: 272 Seats)",
+      partyName: "Party Name",
+      seatsWon: "Won / Leading",
+      voteShare: "Vote Share",
+      mapTitle: "Interactive India Constituency Map",
+      mapDesc: "Hover over states to view constituency leads, turnout %, and total votes counted.",
+      constituencyBreakdown: "Constituency-wise Detailed Results",
+      totalTurnout: "Total Turnout",
+      winner: "Leading Candidate"
+    },
+    officer: {
+      title: "Polling Officer Booth Management Portal",
+      boothHeader: "Polling Station #",
+      voterQueue: "Voter Check-in & Identity Verification Queue",
+      searchEpic: "Search Voter by EPIC / Name",
+      markPresent: "Mark Identity Verified",
+      issueToken: "Issue Voting Token",
+      provisionalBallot: "Log Provisional Ballot",
+      boothTurnout: "Booth Turnout Log",
+      votedCount: "Voters Verified & Voted"
+    },
+    admin: {
+      title: "Election Commission Admin Dashboard",
+      electionLifecycle: "Election Status Lifecycle Manager",
+      statusDraft: "DRAFT",
+      statusScheduled: "SCHEDULED",
+      statusOpen: "OPEN (Voting Active)",
+      statusClosed: "CLOSED",
+      statusTabulation: "TABULATION",
+      statusAudit: "AUDIT",
+      statusCertified: "CERTIFIED",
+      partyManager: "Political Parties & Candidates",
+      auditLogs: "Tamper-Evident Hash Audit Logs",
+      exportReports: "Export Official Reports (CSV / PDF / Excel)",
+      reconciliation: "Cryptographic Reconciliation Tally"
+    }
+  },
+  hi: {
+    platformName: "भारत डिजिटल चुनाव मंच",
+    platformSubtitle: "भारत मतदान मंच - सुरक्षित, गोपनीय और पारदर्शी डिजिटल मतदान",
+    demoBanner: "केवल प्रदर्शन हेतु प्रणाली — काल्पनिक डेटा। भारत निर्वाचन आयोग से संबद्ध नहीं।",
+    nav: {
+      home: "मुख्य पृष्ठ",
+      results: "लाइव परिणाम एवं मानचित्र",
+      voterPortal: "मतदाता पोर्टल",
+      officerPortal: "पीठासीन अधिकारी पोर्टल",
+      adminPortal: "प्रशासन डैशबोर्ड",
+      login: "लॉगिन / सत्यापन",
+      register: "ईपिक पंजीकरण",
+      logout: "लॉगआउट"
+    },
+    hero: {
+      badge: "18वीं लोकसभा आम चुनाव 2026",
+      title: "95 करोड़ से अधिक भारतीय नागरिकों को डिजिटल सत्यनिष्ठा से सशक्त बनाना",
+      description: "बहु-कारक मतदाता प्राधिकरण, इंटरैक्टिव वीवीपीएटी पर्ची प्रदर्शन, दोहरा-मतदान रोकथाम लॉक और वास्तविक समय निर्वाचन क्षेत्र विश्लेषण के साथ गोपनीय मतदान प्रणाली।",
+      checkEligibility: "ईपिक पात्रता जांचें",
+      castVoteNow: "डिजिटल मतदान करें",
+      viewLiveResults: "लाइव परिणाम और नक्शा देखें"
+    },
+    stats: {
+      registeredVoters: "95.4 करोड़",
+      registeredLabel: "पंजीकृत योग्य मतदाता",
+      activeElections: "543",
+      constituenciesLabel: "संसदीय निर्वाचन क्षेत्र",
+      pollingBooths: "10.5 लाख",
+      boothsLabel: "सत्यापित मतदान केंद्र",
+      currentTurnout: "67.8%",
+      turnoutLabel: "राष्ट्रीय मतदान प्रतिशत"
+    },
+    voter: {
+      title: "डिजिटल मतदाता पहचान पोर्टल",
+      epicCardTitle: "मतदाता पहचान पत्र (EPIC)",
+      epicNumber: "ईपिक संख्या",
+      aadhaarHash: "आधार लिंक स्थिति",
+      constituency: "निर्वाचन क्षेत्र",
+      state: "राज्य / केंद्र शासित प्रदेश",
+      pollingStation: "आवंटित मतदान केंद्र",
+      boothNo: "बूथ संख्या",
+      status: "पात्रता की स्थिति",
+      eligible: "मतदान हेतु पात्र",
+      alreadyVoted: "मतदान संपन्न एवं हैश सत्यापित",
+      castBallotBtn: "डिजिटल बैलेट पर जाएं",
+      viewReceiptBtn: "मतदान रसीद डाउनलोड करें",
+      vvpatReceiptTitle: "क्रिप्टोग्राफिक मत रसीद",
+      receiptHash: "रसीद हैश कोड",
+      pollingType: "मतदान चैनल",
+      timestamp: "समय मोहर"
+    },
+    ballot: {
+      title: "अधिकारिक डिजिटल मतपत्र",
+      instructions: "अपने चुने हुए उम्मीदवार के सामने 'VOTE' बटन दबाएं। आपका वोट पूरी तरह गोपनीय, गुमनाम और एनक्रिप्टेड है।",
+      candidateName: "उम्मीदवार का नाम",
+      partyName: "राजनीतिक दल",
+      symbol: "चुनाव चिन्ह",
+      serialNo: "क्र.सं.",
+      voteBtn: "मत दें (VOTE)",
+      notaName: "इनमें से कोई नहीं (नोटा / NOTA)",
+      notaDesc: "उन मतदाताओं के लिए विकल्प जो किसी भी उम्मीदवार को मत नहीं देना चाहते।",
+      confirmTitle: "अपने मतपत्र चयन की पुष्टि करें",
+      confirmMsg: "आपने चुना है:",
+      confirmWarning: "एक बार जमा करने के बाद, आपका वोट सुरक्षित रूप से दर्ज कर दिया जाएगा और इसे बदला नहीं जा सकेगा।",
+      confirmSubmit: "पुष्टि करें और वोट डालें",
+      cancel: "चयन बदलें"
+    },
+    vvpat: {
+      title: "वीवीपीएटी सत्यापन इकाई (प्रदर्शन)",
+      printing: "इलेक्ट्रॉनिक बैलेट पर्ची प्रिंट हो रही है...",
+      showing: "पारदर्शी शीशे से उम्मीदवार पर्ची का सत्यापन (7 सेकंड)...",
+      dropped: "पर्ची सुरक्षित रूप से सीलबंद बॉक्स में गिर गई।",
+      receiptGenerated: "मत सफलतापूर्वक दर्ज किया गया! क्रिप्टोग्राफिक रसीद जनरेट हुई।"
+    },
+    results: {
+      title: "आधिकारिक लाइव चुनाव परिणाम एवं मतदान नक्शा",
+      nationalTally: "राष्ट्रीय दलीय स्थिति (बहुमत: 272 सीटें)",
+      partyName: "दल का नाम",
+      seatsWon: "जीत / बढ़त",
+      voteShare: "मत प्रतिशत",
+      mapTitle: "इंटरैक्टिव भारत निर्वाचन क्षेत्र मानचित्र",
+      mapDesc: "राज्यवार बढ़त, मतदान % और कुल गिने गए मतों को देखने के लिए मानचित्र पर क्लिक करें।",
+      constituencyBreakdown: "निर्वाचन क्षेत्र वार विस्तृत परिणाम",
+      totalTurnout: "कुल मतदान %",
+      winner: "अग्रणी उम्मीदवार"
+    },
+    officer: {
+      title: "पीठासीन अधिकारी बूथ प्रबंधन पोर्टल",
+      boothHeader: "मतदान केंद्र #",
+      voterQueue: "मतदाता आगमन और पहचान सत्यापन कतार",
+      searchEpic: "ईपिक / नाम से खोजें",
+      markPresent: "पहचान सत्यापित चिन्हित करें",
+      issueToken: "मतदान टोकन जारी करें",
+      provisionalBallot: "अनंतिम मतपत्र दर्ज करें",
+      boothTurnout: "बूथ मतदान लॉग",
+      votedCount: "सत्यापित एवं मतदान कर चुके मतदाता"
+    },
+    admin: {
+      title: "भारत निर्वाचन आयोग प्रशासन डैशबोर्ड",
+      electionLifecycle: "चुनाव स्थिति जीवनचक्र प्रबंधक",
+      statusDraft: "प्रारूप (DRAFT)",
+      statusScheduled: "अनुसूचित (SCHEDULED)",
+      statusOpen: "खुला (मतदान सक्रिय)",
+      statusClosed: "बंद (CLOSED)",
+      statusTabulation: "सारणीयन (TABULATION)",
+      statusAudit: "लेखा परीक्षा (AUDIT)",
+      statusCertified: "प्रमाणित (CERTIFIED)",
+      partyManager: "राजनीतिक दल एवं उम्मीदवार",
+      auditLogs: "छेड़छाड़-मुक्त हैश ऑडिट लॉग",
+      exportReports: "आधिकारिक रिपोर्ट निर्यात करें (CSV / PDF)",
+      reconciliation: "क्रिप्टोग्राफिक मिलान गणना"
+    }
+  }
+};
