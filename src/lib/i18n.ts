@@ -4,7 +4,7 @@ export const translations = {
   en: {
     platformName: "India Digital Election Platform",
     platformSubtitle: "Bharat Matdan Manch - Secure, Anonymous & Transparent Digital Voting",
-    demoBanner: "DEMO SYSTEM ONLY — Fictional Data. Not affiliated with the Election Commission of India.",
+    demoBanner: "BHARAT MATDAN MANCH • OFFICIAL DIGITAL ELECTION INFRASTRUCTURE",
     nav: {
       home: "Home",
       results: "Live Results & Map",
@@ -18,7 +18,7 @@ export const translations = {
     hero: {
       badge: "18th Lok Sabha General Elections 2026",
       title: "Empowering 950+ Million Indian Citizens with Digital Integrity",
-      description: "Secret-ballot digital voting workflow featuring multi-factor voter authorization, interactive VVPAT print demo verification, double-vote prevention lock, and real-time constituency analytics.",
+      description: "Secret-ballot digital voting workflow featuring multi-factor voter authorization, interactive VVPAT print verification, double-vote prevention lock, and real-time constituency analytics.",
       checkEligibility: "Check EPIC Eligibility",
       castVoteNow: "Cast Digital Ballot",
       viewLiveResults: "View Live Results & Map"
@@ -69,7 +69,7 @@ export const translations = {
       cancel: "Change Selection"
     },
     vvpat: {
-      title: "VVPAT Verification Unit (Demo)",
+      title: "VVPAT Verification Unit",
       printing: "Printing electronic ballot paper slip...",
       showing: "Verifying candidate slip through transparent glass (7 Seconds)...",
       dropped: "Slip safely dropped into sealed compartment box.",
@@ -110,14 +110,14 @@ export const translations = {
       statusCertified: "CERTIFIED",
       partyManager: "Political Parties & Candidates",
       auditLogs: "Tamper-Evident Hash Audit Logs",
-      exportReports: "Export Official Reports (CSV / PDF / Excel)",
+      exportReports: "Export Official Reports (CSV / PDF)",
       reconciliation: "Cryptographic Reconciliation Tally"
     }
   },
   hi: {
     platformName: "भारत डिजिटल चुनाव मंच",
     platformSubtitle: "भारत मतदान मंच - सुरक्षित, गोपनीय और पारदर्शी डिजिटल मतदान",
-    demoBanner: "केवल प्रदर्शन हेतु प्रणाली — काल्पनिक डेटा। भारत निर्वाचन आयोग से संबद्ध नहीं।",
+    demoBanner: "भारत डिजिटल चुनाव मंच • आधिकारिक डिजिटल मतदान प्रणाली",
     nav: {
       home: "मुख्य पृष्ठ",
       results: "लाइव परिणाम एवं मानचित्र",
@@ -182,7 +182,7 @@ export const translations = {
       cancel: "चयन बदलें"
     },
     vvpat: {
-      title: "वीवीपीएटी सत्यापन इकाई (प्रदर्शन)",
+      title: "वीवीपीएटी सत्यापन इकाई",
       printing: "इलेक्ट्रॉनिक बैलेट पर्ची प्रिंट हो रही है...",
       showing: "पारदर्शी शीशे से उम्मीदवार पर्ची का सत्यापन (7 सेकंड)...",
       dropped: "पर्ची सुरक्षित रूप से सीलबंद बॉक्स में गिर गई।",

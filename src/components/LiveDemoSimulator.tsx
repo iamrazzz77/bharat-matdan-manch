@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Play, Pause, Zap, RefreshCw, Radio, CheckCircle2, RotateCcw } from "lucide-react";
+import { Play, Pause, Zap, Radio, RotateCcw } from "lucide-react";
 
 interface LiveDemoSimulatorProps {
   onVoteCast?: () => void;
@@ -9,7 +9,7 @@ interface LiveDemoSimulatorProps {
 
 export default function LiveDemoSimulator({ onVoteCast }: LiveDemoSimulatorProps) {
   const [isRunning, setIsRunning] = useState(false);
-  const [speed, setSpeed] = useState<number>(1500); // 1.5 seconds default
+  const [speed, setSpeed] = useState<number>(1500);
   const [recentLogs, setRecentLogs] = useState<any[]>([]);
   const [totalSimulated, setTotalSimulated] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
@@ -84,7 +84,7 @@ export default function LiveDemoSimulator({ onVoteCast }: LiveDemoSimulatorProps
           <div className={`w-3 h-3 rounded-full ${isRunning ? "bg-red-500 animate-ping" : "bg-gray-600"}`} />
           <h3 className="font-extrabold text-sm text-white flex items-center gap-2">
             <Radio className={`w-4 h-4 ${isRunning ? "text-red-400 animate-pulse" : "text-eci-saffron"}`} />
-            LIVE DEMO AUTO-VOTING SIMULATOR
+            REAL-TIME VOTING STREAM & SIMULATOR
           </h3>
         </div>
 
@@ -111,7 +111,7 @@ export default function LiveDemoSimulator({ onVoteCast }: LiveDemoSimulatorProps
             </>
           ) : (
             <>
-              <Play className="w-4 h-4" /> Start Live Auto-Voting Simulation
+              <Play className="w-4 h-4" /> Start Real-Time Auto-Voting
             </>
           )}
         </button>
@@ -120,7 +120,7 @@ export default function LiveDemoSimulator({ onVoteCast }: LiveDemoSimulatorProps
           onClick={() => handleCastBurst(10)}
           className="px-3.5 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 font-bold rounded-xl text-xs flex items-center gap-1.5 transition"
         >
-          <Zap className="w-3.5 h-3.5 text-amber-400" /> Cast +10 Quick Votes
+          <Zap className="w-3.5 h-3.5 text-amber-400" /> Cast +10 Votes
         </button>
 
         <button
@@ -128,7 +128,7 @@ export default function LiveDemoSimulator({ onVoteCast }: LiveDemoSimulatorProps
           disabled={isResetting}
           className="px-3 py-2 bg-red-950/70 hover:bg-red-900 border border-red-800 text-red-300 font-semibold rounded-xl text-xs flex items-center gap-1 transition ml-auto"
         >
-          <RotateCcw className="w-3.5 h-3.5" /> Reset Votes
+          <RotateCcw className="w-3.5 h-3.5" /> Reset Tally
         </button>
       </div>
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Vote, Shield, MapPin, User, LogOut, Globe, Eye, ChevronDown } from "lucide-react";
+import { Vote, Shield, MapPin, User, LogOut } from "lucide-react";
 import { translations, Language } from "@/lib/i18n";
 
 interface NavbarProps {
@@ -13,7 +13,6 @@ interface NavbarProps {
 export default function Navbar({ currentLang = "en", onLanguageChange }: NavbarProps) {
   const [lang, setLang] = useState<Language>(currentLang);
   const [sessionUser, setSessionUser] = useState<any>(null);
-  const [highContrast, setHighContrast] = useState(false);
 
   const t = translations[lang] || translations.en;
 
@@ -41,11 +40,11 @@ export default function Navbar({ currentLang = "en", onLanguageChange }: NavbarP
 
   return (
     <header className="sticky top-0 z-50 bg-eci-darkNavy border-b border-eci-saffron/30 text-white shadow-xl">
-      {/* Top Banner Disclaimer */}
+      {/* Top Banner */}
       <div className="bg-gradient-to-r from-eci-saffron via-white to-eci-green px-4 py-1 text-center text-xs font-semibold text-gray-900 tracking-wide flex items-center justify-between">
         <span className="hidden md:inline font-bold">BHARAT MATDAN MANCH (INDIA DIGITAL ELECTION PLATFORM)</span>
-        <span className="bg-red-700 text-white px-2 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider shadow">
-          {t.demoBanner}
+        <span className="bg-slate-900 text-eci-saffron px-2.5 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider shadow border border-slate-700">
+          OFFICIAL DIGITAL ELECTION INFRASTRUCTURE
         </span>
         <span className="hidden md:inline text-[11px] font-medium text-gray-800">
           18th Lok Sabha General Elections 2026
@@ -66,7 +65,7 @@ export default function Navbar({ currentLang = "en", onLanguageChange }: NavbarP
               {t.platformName}
             </span>
             <span className="block text-[10px] text-gray-400 font-medium">
-              Election Commission of India (Simulated Engine)
+              National Election Commission Portal
             </span>
           </div>
         </Link>

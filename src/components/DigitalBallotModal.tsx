@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Vote, CheckCircle, AlertTriangle, Printer, Lock, Download, X, Sun, Hand, Shield, Star, Zap } from "lucide-react";
-import { exportToCSV, printAuditReport } from "@/lib/exportUtils";
+import { printAuditReport } from "@/lib/exportUtils";
 
 interface Candidate {
   id: string;
@@ -50,7 +50,6 @@ export default function DigitalBallotModal({
 
   if (!isOpen) return null;
 
-  // Render party symbol icon
   const renderSymbolIcon = (iconName?: string) => {
     switch (iconName) {
       case "Sun": return <Sun className="w-6 h-6 text-amber-500" />;
@@ -100,11 +99,8 @@ export default function DigitalBallotModal({
 
       setReceiptCode(data.receiptHash);
       setIsCasting(false);
-      
-      // Move to VVPAT Animation step
       setStep(4);
 
-      // Start VVPAT 7-second countdown
       let count = 7;
       const interval = setInterval(() => {
         count -= 1;
@@ -135,7 +131,7 @@ export default function DigitalBallotModal({
         <p><strong>Receipt Hash Code:</strong> <span style="font-family: monospace; font-size: 16px; color: #000080;">${receiptCode}</span></p>
         <p><strong>Timestamp:</strong> ${new Date().toLocaleString("en-IN")}</p>
         <hr style="margin: 20px 0;" />
-        <p style="font-size: 11px; color: #555;">This receipt proves that your ballot was anonymously recorded in the secret vote archive. Your individual candidate choice is not stored on this receipt to preserve ballot secrecy.</p>
+        <p style="font-size: 11px; color: #555;">This receipt proves that your ballot was anonymously recorded in the secret vote archive. Your candidate choice remains secret.</p>
       </div>
       `
     );
@@ -172,7 +168,7 @@ export default function DigitalBallotModal({
             </div>
           )}
 
-          {/* STEP 1: OTP Identity Authorization */}
+          {/* STEP 1 */}
           {step === 1 && (
             <div className="space-y-5 text-center py-4">
               <div className="w-14 h-14 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto">
@@ -181,7 +177,7 @@ export default function DigitalBallotModal({
               <div>
                 <h4 className="text-lg font-bold text-white">Multi-Factor Identity Authorization</h4>
                 <p className="text-xs text-gray-400 max-w-md mx-auto mt-1">
-                  A 6-digit OTP code has been sent to your registered mobile (+91-98765*****). Please enter it below to unlock your digital ballot paper.
+                  A 6-digit verification code has been sent to your registered mobile number. Please enter it below to unlock your digital ballot paper.
                 </p>
               </div>
 
@@ -191,9 +187,8 @@ export default function DigitalBallotModal({
                   maxLength={6}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  className="w-full text-center text-2xl font-mono tracking-widest bg-gray-900 border border-gray-700 rounded-xl py-3 text-eci-saffron focus:outline-none focus:border-eci-saffron"
+                  className="w-full text-center text-2xl font-mono tracking-widest bg-gray-950 border border-gray-700 rounded-xl py-3 text-eci-saffron focus:outline-none focus:border-eci-saffron"
                 />
-                <p className="text-[10px] text-gray-500 font-mono">Demo Auto-filled OTP: 123456</p>
 
                 <button
                   onClick={handleOtpVerify}
@@ -205,7 +200,7 @@ export default function DigitalBallotModal({
             </div>
           )}
 
-          {/* STEP 2: Digital Ballot Paper listing Candidates */}
+          {/* STEP 2 */}
           {step === 2 && (
             <div>
               <div className="mb-4 bg-gray-900/80 p-3 rounded-xl border border-gray-800 flex items-center justify-between text-xs">
@@ -264,7 +259,7 @@ export default function DigitalBallotModal({
             </div>
           )}
 
-          {/* STEP 3: Vote Choice Confirmation */}
+          {/* STEP 3 */}
           {step === 3 && selectedCandidate && (
             <div className="space-y-6 text-center py-4">
               <div className="w-16 h-16 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full flex items-center justify-center mx-auto">
@@ -314,7 +309,7 @@ export default function DigitalBallotModal({
             </div>
           )}
 
-          {/* STEP 4: Interactive VVPAT Printing Demo */}
+          {/* STEP 4 */}
           {step === 4 && (
             <div className="space-y-6 text-center py-6">
               <div className="w-16 h-16 bg-eci-saffron/10 border border-eci-saffron/40 text-eci-saffron rounded-full flex items-center justify-center mx-auto animate-pulse">
@@ -328,13 +323,11 @@ export default function DigitalBallotModal({
                 <h4 className="text-2xl font-black text-white mt-1">Printing & Verifying Ballot Slip</h4>
               </div>
 
-              {/* VVPAT Printer Slip Demo Box */}
               <div className="relative w-80 h-56 mx-auto bg-gray-950 border-4 border-gray-700 rounded-2xl overflow-hidden shadow-2xl p-4 flex flex-col items-center justify-between">
                 <div className="w-full bg-gray-800 text-[10px] text-gray-300 font-mono py-1 rounded">
                   TRANSPARENT GLASS WINDOW (VERIFICATION ACTIVE)
                 </div>
 
-                {/* Sliding Slip */}
                 <div className="w-full bg-white text-gray-900 p-3 rounded shadow-md font-mono text-left space-y-1 transform transition-all duration-1000 animate-bounce">
                   <div className="flex justify-between border-b border-gray-300 pb-1 text-[10px] font-bold">
                     <span>ECI OFFICIAL SLIP</span>
@@ -358,7 +351,7 @@ export default function DigitalBallotModal({
             </div>
           )}
 
-          {/* STEP 5: Cryptographic Vote Receipt */}
+          {/* STEP 5 */}
           {step === 5 && (
             <div className="space-y-6 text-center py-4">
               <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
@@ -372,11 +365,11 @@ export default function DigitalBallotModal({
                 </p>
               </div>
 
-              <div className="bg-gray-900 border border-emerald-700/60 rounded-2xl p-5 max-w-md mx-auto text-center space-y-2 shadow-inner">
+              <div className="bg-gray-950 border border-emerald-700/60 rounded-2xl p-5 max-w-md mx-auto text-center space-y-2 shadow-inner">
                 <span className="text-[11px] text-emerald-400 font-mono font-bold uppercase tracking-wider block">
                   Cryptographic SHA-256 Receipt Code
                 </span>
-                <span className="text-lg font-extrabold font-mono text-white tracking-widest block select-all bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+                <span className="text-lg font-extrabold font-mono text-white tracking-widest block select-all bg-gray-900 p-2.5 rounded-xl border border-gray-800">
                   {receiptCode}
                 </span>
                 <p className="text-[10px] text-gray-400">

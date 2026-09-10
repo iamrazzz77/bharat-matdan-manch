@@ -32,7 +32,6 @@ export default function LoginPage() {
         return;
       }
 
-      // Redirect based on role
       const role = data.user.role;
       if (role === "SUPER_ADMIN" || role === "ADMIN") {
         router.push("/admin");
@@ -81,7 +80,7 @@ export default function LoginPage() {
             <input
               type="text"
               required
-              placeholder="e.g. EPIC100001 or admin@eci.gov.in"
+              placeholder="EPIC Number or Email"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               className="w-full px-4 py-3 bg-gray-950 border border-gray-700 rounded-xl text-sm text-white focus:outline-none focus:border-eci-saffron font-mono"
@@ -112,10 +111,10 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* PRESET QUICK-LOGIN DEMO BUTTONS */}
+        {/* PRESET PORTAL ACCESS SHORTCUTS */}
         <div className="pt-4 border-t border-gray-800 space-y-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400 block text-center">
-            ⚡ Quick Demo Credentials
+            Portal Access Profiles
           </span>
           
           <div className="grid grid-cols-2 gap-2 text-xs">
@@ -124,7 +123,7 @@ export default function LoginPage() {
               className="p-2.5 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-xl text-left text-gray-200 transition"
             >
               <div className="font-bold text-eci-saffron flex items-center gap-1">
-                <UserCheck className="w-3.5 h-3.5" /> Demo Voter 1
+                <UserCheck className="w-3.5 h-3.5" /> Registered Voter
               </div>
               <div className="text-[10px] text-gray-400 font-mono">EPIC100001</div>
             </button>
@@ -134,7 +133,7 @@ export default function LoginPage() {
               className="p-2.5 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-xl text-left text-gray-200 transition"
             >
               <div className="font-bold text-eci-saffron flex items-center gap-1">
-                <UserCheck className="w-3.5 h-3.5" /> Demo Voter 2
+                <UserCheck className="w-3.5 h-3.5" /> Registered Voter
               </div>
               <div className="text-[10px] text-gray-400 font-mono">EPIC100003</div>
             </button>

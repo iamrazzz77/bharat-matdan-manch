@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Vote, Shield, CheckCircle, Lock, FileText } from "lucide-react";
+import { Vote, Shield, CheckCircle, Lock } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -39,7 +39,7 @@ export default function Footer() {
               <li><Link href="/officer" className="hover:text-amber-400">Polling Officer Booth Check-In</Link></li>
               <li><Link href="/admin" className="hover:text-cyan-400">Admin Lifecycle Manager</Link></li>
               <li><Link href="/admin#audit" className="hover:text-cyan-400">Tamper-Evident Audit Logs</Link></li>
-              <li><Link href="/admin#reports" className="hover:text-cyan-400">Download CSV & PDF Reports</Link></li>
+              <li><Link href="/admin#reports" className="hover:text-cyan-400">Download Reports</Link></li>
             </ul>
           </div>
 
@@ -53,7 +53,7 @@ export default function Footer() {
               </p>
               <p className="flex items-center gap-1.5 text-gray-300">
                 <CheckCircle className="w-3.5 h-3.5 text-eci-saffron" />
-                VVPAT Interactive Demo Slip
+                VVPAT Electronic Verification Slip
               </p>
               <p className="flex items-center gap-1.5 text-gray-300">
                 <CheckCircle className="w-3.5 h-3.5 text-eci-saffron" />
@@ -68,11 +68,11 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
-          <p>© 2026 Bharat Matdan Manch (India Digital Election Platform Demo). Fictional voters and data.</p>
-          <div className="flex gap-4">
-            <span>Argon2id / bcrypt Password Hashing</span>
-            <span>REST API & Prisma ORM</span>
-            <span>PostgreSQL & Docker Ready</span>
+          <p>© 2026 Bharat Matdan Manch (India Digital Election Platform). All rights reserved.</p>
+          <div className="flex gap-4 font-mono">
+            <span>Secure Encryption</span>
+            <span>REST API</span>
+            <span>Cryptographic Auditing</span>
           </div>
         </div>
       </div>
