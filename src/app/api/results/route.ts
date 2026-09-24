@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { INDIA_MASTER_GEO } from "../../../../prisma/seedData/indiaMasterGeo";
 
 export const dynamic = "force-dynamic";
 
@@ -251,6 +252,36 @@ export async function GET(req: Request) {
       { id: "c6", code: "PC01-WB", name: "Kolkata Uttar", districtName: "Kolkata", stateName: "West Bengal", stateCode: "WB", turnoutPercent: "78.9%", leadingCandidate: "Smriti Banerjee", leadingParty: "DSF", leadingColor: "#D4AF37", votesCounted: 31200 }
     ];
 
+    const fallbackStatesData = INDIA_MASTER_GEO.map((st) => {
+      const defaultPartyMap: Record<string, { code: string; color: string }> = {
+        MH: { code: "BEP", color: "#FF9933" },
+        UP: { code: "BEP", color: "#FF9933" },
+        KL: { code: "NPA", color: "#000080" },
+        KA: { code: "NPA", color: "#000080" },
+        WB: { code: "DSF", color: "#D4AF37" },
+        TN: { code: "SJP", color: "#138808" },
+        DL: { code: "SJP", color: "#138808" },
+        BR: { code: "BEP", color: "#FF9933" },
+        GJ: { code: "BEP", color: "#FF9933" },
+        RJ: { code: "BEP", color: "#FF9933" }
+      };
+      const d = defaultPartyMap[st.code] || { code: "BEP", color: "#FF9933" };
+      return {
+        id: st.code,
+        code: st.code,
+        name: st.name,
+        nameHi: st.nameHi,
+        type: st.type,
+        seats: st.totalSeats,
+        districtCount: st.districts.length,
+        constituencyCount: st.districts.reduce((acc, curr) => acc + curr.constituencies.length, 0),
+        leadingParty: d.code,
+        partyColor: d.color,
+        votesCounted: 24500,
+        turnout: "68.4%"
+      };
+    });
+
     return NextResponse.json({
       success: true,
       mode: "HYBRID_OFFLINE_CACHE",
@@ -261,6 +292,7 @@ export async function GET(req: Request) {
       },
       partyTally: fallbackParties,
       constituencyResults: fallbackConstituencies,
+      statesData: fallbackStatesData,
       totalVotesCounted: 678450,
       nationalTurnoutPercent: "67.8%"
     });
