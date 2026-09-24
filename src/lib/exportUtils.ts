@@ -33,40 +33,55 @@ export function exportToCSV(filename: string, rows: Record<string, any>[]) {
  * Triggers printable PDF view format window
  */
 export function printAuditReport(title: string, htmlBody: string) {
-  const printWindow = window.open("", "_blank", "width=900,height=700");
+  const printWindow = window.open("", "_blank", "width=850,height=750");
   if (!printWindow) return;
 
-  printWindow.document.write(`
+  const fullContent = `
     <!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>
+        <meta charset="utf-8" />
         <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 30px; color: #111; }
-          h1 { color: #000080; border-bottom: 2px solid #FF9933; padding-bottom: 8px; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-          th, td { border: 1px solid #ccc; padding: 10px; text-align: left; font-size: 13px; }
-          th { background-color: #f1f5f9; font-weight: bold; }
-          .header-box { background: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 4px solid #000080; }
-          .footer { margin-top: 40px; font-size: 11px; text-align: center; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
+          body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 30px; color: #0f172a; background: #ffffff; }
+          h1, h2, h3 { color: #0b132b; margin: 0 0 10px 0; }
+          .receipt-box { background: #f8fafc; border: 2px solid #000080; border-radius: 12px; padding: 24px; margin: 20px 0; }
+          .header-box { background: linear-gradient(to right, #ff9933, #ffffff, #138808); padding: 14px 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold; color: #0f172a; border: 1px solid #cbd5e1; }
+          .footer { margin-top: 30px; font-size: 11px; text-align: center; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+          .hash-code { font-family: monospace; font-size: 16px; font-weight: bold; color: #000080; background: #e2e8f0; padding: 6px 12px; border-radius: 6px; display: inline-block; word-break: break-all; }
+          .btn-print { padding: 10px 20px; background: #000080; color: #ffffff; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; shadow: 0 4px 6px rgba(0,0,0,0.1); }
+          .btn-print:hover { background: #1e1b4b; }
+          @media print {
+            .no-print { display: none !important; }
+            body { margin: 10px; }
+          }
         </style>
       </head>
       <body>
         <div class="header-box">
-          <h2>BHARAT MATDAN MANCH - OFFICIAL ELECTION COMMISSION AUDIT REPORT</h2>
-          <p><strong>Report Title:</strong> ${title}</p>
-          <p><strong>Generated On:</strong> ${new Date().toLocaleString("en-IN")}</p>
-          <p><strong>Security Status:</strong> Cryptographically Verified SHA-256 Chained Audit Hash</p>
+          BHARAT MATDAN MANCH — INDIA DIGITAL ELECTION PLATFORM
+        </div>
+        <div class="no-print" style="margin-bottom: 15px; text-align: right;">
+          <button onclick="window.print()" class="btn-print">🖨️ Print / Save PDF Receipt</button>
         </div>
         ${htmlBody}
         <div class="footer">
-          Official Digital Election Platform Demo Report • Confidential & Tamper-Evident Record
+          Official Digital Election Infrastructure • 18th Lok Sabha General Elections 2026<br/>
+          Cryptographically Verified & Tamper-Evident SHA-256 Record
         </div>
-        <script>
-          window.onload = function() { window.print(); }
-        </script>
       </body>
     </html>
-  `);
+  `;
+
+  printWindow.document.open();
+  printWindow.document.write(fullContent);
   printWindow.document.close();
+
+  setTimeout(() => {
+    try {
+      printWindow.focus();
+      printWindow.print();
+    } catch (e) {}
+  }, 300);
 }
+

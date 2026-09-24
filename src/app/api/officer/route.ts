@@ -67,11 +67,29 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const { voterId, action } = await req.json();
+
+    if (voterId && action === "VERIFY_IDENTITY") {
+      const lastAudit = await prisma.auditLog.findFirst({ orderBy: { createdAt: "desc" } });
+      const previousHash = lastAudit ? lastAudit.detailsHash : "GENESIS_HASH_000000000000000000000000";
+
+      await prisma.auditLog.create({
+        data: {
+          userId: voterId,
+          action: "IDENTITY_VERIFIED_AT_BOOTH",
+          entityType: "User",
+          entityId: voterId,
+          detailsHash: `IDENTITY_TOKEN_ISSUED_${voterId}_${Date.now()}`,
+          previousHash: previousHash
+        }
+      });
+    }
+
     return NextResponse.json({
       success: true,
       message: "Voter identity verified at booth. Single-use Voting Authorization Token issued."
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Officer verification error:", error);
     return NextResponse.json({ success: true, message: "Verified" });
   }
 }

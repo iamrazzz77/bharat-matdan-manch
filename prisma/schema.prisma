@@ -10,12 +10,14 @@ datasource db {
 }
 
 model State {
-  id        String     @id @default(uuid())
-  code      String     @unique
-  name      String
-  nameHi    String
-  districts District[]
-  users     User[]
+  id         String     @id @default(uuid())
+  code       String     @unique
+  name       String
+  nameHi     String
+  type       String     @default("STATE") // STATE or UNION_TERRITORY
+  totalSeats Int        @default(0)
+  districts  District[]
+  users      User[]
 }
 
 model District {
@@ -25,21 +27,22 @@ model District {
   name           String
   nameHi         String
   constituencies Constituency[]
+  users          User[]
 }
 
 model Constituency {
-  id             String          @id @default(uuid())
-  districtId     String
-  district       District        @relation(fields: [districtId], references: [id])
-  code           String          @unique
-  name           String
-  nameHi         String
-  type           String          @default("PARLIAMENTARY")
-  totalVoters    Int             @default(0)
+  id              String          @id @default(uuid())
+  districtId      String
+  district        District        @relation(fields: [districtId], references: [id])
+  code            String          @unique
+  name            String
+  nameHi          String
+  type            String          @default("PARLIAMENTARY")
+  totalVoters     Int             @default(0)
   pollingStations PollingStation[]
-  candidates     Candidate[]
-  users          User[]
-  anonymousVotes AnonymousVote[]
+  candidates      Candidate[]
+  users           User[]
+  anonymousVotes  AnonymousVote[]
 }
 
 model PollingStation {
@@ -73,6 +76,8 @@ model User {
   role           String    @default("VOTER")
   stateId        String?
   state          State?    @relation(fields: [stateId], references: [id])
+  districtId     String?
+  district       District? @relation(fields: [districtId], references: [id])
   constituencyId String?
   constituency   Constituency? @relation(fields: [constituencyId], references: [id])
   stationId      String?

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AIElectionAssistant from "@/components/AIElectionAssistant";
 
 export const metadata: Metadata = {
   title: "Bharat Matdan Manch - India Digital Election Platform",
@@ -15,13 +16,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-eci-darkNavy text-slate-100 min-h-screen flex flex-col antialiased">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+      </head>
+      <body className="bg-[#080d1a] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-eci-saffron selection:text-gray-950">
         <Navbar />
         <main className="flex-1">
           {children}
         </main>
+        <AIElectionAssistant />
         <Footer />
       </body>
     </html>
   );
 }
+

@@ -3,15 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --background: #0b132b;
+  --background: #080d1a;
   --foreground: #f8fafc;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 153, 51, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(19, 136, 8, 0.05) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(56, 189, 248, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
 }
 
 /* Custom scrollbars */
@@ -21,14 +26,77 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #090e1c;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #1e293b;
   border-radius: 4px;
+  border: 1px solid #334155;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #ff9933;
 }
+
+/* Glassmorphism & Custom UI Utility Classes */
+.glass-nav {
+  background: rgba(11, 19, 43, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-card {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 153, 51, 0.3);
+  box-shadow: 0 10px 30px -10px rgba(255, 153, 51, 0.15);
+}
+
+/* Glow Keyframe Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.8;
+    box-shadow: 0 0 15px rgba(255, 153, 51, 0.3);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(255, 153, 51, 0.6);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s infinite ease-in-out;
+}
+
+@keyframes liveDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.5;
+  }
+}
+
+.animate-live-dot {
+  animation: liveDot 1.5s infinite ease-in-out;
+}
+
+.tricolor-gradient-text {
+  background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+

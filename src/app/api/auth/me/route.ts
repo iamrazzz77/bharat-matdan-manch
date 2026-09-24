@@ -30,8 +30,7 @@ export async function GET() {
   try {
     const session = getAuthSession();
     if (!session) {
-      // In demo mode on Vercel if session is empty, return default voter profile
-      return NextResponse.json({ authenticated: true, user: mockVoterProfile });
+      return NextResponse.json({ authenticated: false, user: null });
     }
 
     const user = await prisma.user.findUnique({
@@ -53,7 +52,23 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json({ authenticated: true, user: mockVoterProfile });
+      return NextResponse.json({
+        authenticated: true,
+        user: {
+          id: session.userId,
+          epicNumber: session.epicNumber,
+          fullName: session.fullName,
+          role: session.role,
+          activeElection: {
+            id: "demo-2026",
+            title: "18th Lok Sabha General Elections 2026",
+            status: "OPEN",
+            hasVoted: false,
+            receiptHash: null,
+            votedAt: null
+          }
+        }
+      });
     }
 
     const activeElection = await prisma.election.findFirst({
@@ -99,6 +114,18 @@ export async function GET() {
     });
   } catch (error: any) {
     console.warn("Auth Me DB Warning:", error?.message);
-    return NextResponse.json({ authenticated: true, user: mockVoterProfile });
+    const session = getAuthSession();
+    if (session) {
+      return NextResponse.json({
+        authenticated: true,
+        user: {
+          id: session.userId,
+          epicNumber: session.epicNumber,
+          fullName: session.fullName,
+          role: session.role
+        }
+      });
+    }
+    return NextResponse.json({ authenticated: false, user: null });
   }
 }

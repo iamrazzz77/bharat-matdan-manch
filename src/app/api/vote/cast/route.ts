@@ -12,13 +12,31 @@ export async function POST(req: Request) {
     const timestamp = Date.now();
     const receiptHash = generateVoteReceipt(userId, electionId || "demo-2026", timestamp);
 
+    let constituencyName = "Constituency";
+    let candidateName = candidateId ? "Candidate Choice" : "NONE OF THE ABOVE (NOTA)";
+
     try {
       const user = await prisma.user.findUnique({
         where: { id: userId },
         include: { constituency: true }
       });
 
-      if (user && user.constituencyId) {
+      if (user && user.constituency) {
+        constituencyName = user.constituency.name;
+      }
+
+      if (candidateId) {
+        const candidateRecord = await prisma.candidate.findUnique({
+          where: { id: candidateId },
+          include: { party: true }
+        });
+        if (candidateRecord) {
+          candidateName = `${candidateRecord.fullName} (${candidateRecord.party?.shortCode || "IND"})`;
+        }
+      }
+
+        const { forceDemo, resetDemo } = await req.json().catch(() => ({}));
+
         const existingParticipation = await prisma.voterParticipation.findUnique({
           where: {
             voterId_electionId: {
@@ -29,11 +47,19 @@ export async function POST(req: Request) {
         });
 
         if (existingParticipation) {
-          return NextResponse.json({
-            error: "DOUBLE VOTE PREVENTED: You have already cast your ballot in this election.",
-            receiptHash: existingParticipation.receiptHash,
-            votedAt: existingParticipation.votedAt
-          }, { status: 400 });
+          if (forceDemo || resetDemo) {
+            // Demo reset mode: remove previous lock to allow re-testing
+            await prisma.voterParticipation.delete({
+              where: { id: existingParticipation.id }
+            }).catch(() => {});
+          } else {
+            return NextResponse.json({
+              error: "DOUBLE VOTE PREVENTED: You have already cast your ballot in this election.",
+              receiptHash: existingParticipation.receiptHash,
+              votedAt: existingParticipation.votedAt,
+              isAlreadyVoted: true
+            }, { status: 400 });
+          }
         }
 
         const lastAudit = await prisma.auditLog.findFirst({ orderBy: { createdAt: "desc" } });
@@ -79,8 +105,8 @@ export async function POST(req: Request) {
       success: true,
       receiptHash,
       timestamp: new Date(timestamp).toISOString(),
-      constituencyName: "Mumbai South",
-      candidateName: candidateId ? "Devendra Shinde" : "NONE OF THE ABOVE (NOTA)"
+      constituencyName,
+      candidateName
     });
 
   } catch (error: any) {

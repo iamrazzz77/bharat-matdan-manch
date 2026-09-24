@@ -1,15 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { INDIA_MASTER_GEO } from "./seedData/indiaMasterGeo";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Starting Bharat Matdan Manch Database Seed...");
+  console.log("Starting Bharat Matdan Manch Comprehensive Database Seed...");
 
-  // Clean old records
+  // 1. Clean existing records in reverse dependency order
+  console.log("Cleaning previous database records...");
   await prisma.anonymousVote.deleteMany();
   await prisma.voterParticipation.deleteMany();
   await prisma.absenteeRequest.deleteMany();
+  await prisma.auditLog.deleteMany();
   await prisma.candidate.deleteMany();
   await prisma.election.deleteMany();
   await prisma.party.deleteMany();
@@ -23,136 +26,78 @@ async function main() {
   const passwordHash = await bcrypt.hash("Pass123!", 10);
   const voterPasswordHash = await bcrypt.hash("Voter123!", 10);
 
-  // 1. States
-  const mhState = await prisma.state.create({
-    data: { code: "MH", name: "Maharashtra", nameHi: "महाराष्ट्र" }
-  });
-  const upState = await prisma.state.create({
-    data: { code: "UP", name: "Uttar Pradesh", nameHi: "उत्तर प्रदेश" }
-  });
-  const klState = await prisma.state.create({
-    data: { code: "KL", name: "Kerala", nameHi: "केरल" }
-  });
-  const dlState = await prisma.state.create({
-    data: { code: "DL", name: "Delhi", nameHi: "दिल्ली" }
-  });
-  const kaState = await prisma.state.create({
-    data: { code: "KA", name: "Karnataka", nameHi: "कर्नाटक" }
-  });
+  // Map to hold created DB models for fast lookup
+  const createdStates: Record<string, any> = {};
+  const createdDistricts: Record<string, any> = {};
+  const createdConstituencies: Record<string, any> = {};
+  const createdStations: Record<string, any> = {};
 
-  // 2. Districts
-  const mumbaiDistrict = await prisma.district.create({
-    data: { stateId: mhState.id, name: "Mumbai City", nameHi: "मुंबई शहर" }
-  });
-  const varanasiDistrict = await prisma.district.create({
-    data: { stateId: upState.id, name: "Varanasi", nameHi: "वाराणसी" }
-  });
-  const wayanadDistrict = await prisma.district.create({
-    data: { stateId: klState.id, name: "Wayanad", nameHi: "वायनाड" }
-  });
-  const newDelhiDistrict = await prisma.district.create({
-    data: { stateId: dlState.id, name: "New Delhi", nameHi: "नई दिल्ली" }
-  });
-  const blrDistrict = await prisma.district.create({
-    data: { stateId: kaState.id, name: "Bengaluru Urban", nameHi: "बेंगलुरु शहरी" }
-  });
+  console.log(`Seeding complete Master Geographic Hierarchy (${INDIA_MASTER_GEO.length} States/UTs)...`);
 
-  // 3. Constituencies
-  const mumbaiSouthPC = await prisma.constituency.create({
-    data: {
-      districtId: mumbaiDistrict.id,
-      code: "PC01-MH",
-      name: "Mumbai South",
-      nameHi: "दक्षिण मुंबई",
-      type: "PARLIAMENTARY",
-      totalVoters: 1548000
+  for (const stData of INDIA_MASTER_GEO) {
+    const state = await prisma.state.create({
+      data: {
+        code: stData.code,
+        name: stData.name,
+        nameHi: stData.nameHi,
+        type: stData.type,
+        totalSeats: stData.totalSeats
+      }
+    });
+    createdStates[state.code] = state;
+
+    for (const distData of stData.districts) {
+      const district = await prisma.district.create({
+        data: {
+          stateId: state.id,
+          name: distData.name,
+          nameHi: distData.nameHi
+        }
+      });
+      createdDistricts[`${state.code}:${district.name}`] = district;
+
+      for (const constData of distData.constituencies) {
+        const constituency = await prisma.constituency.create({
+          data: {
+            districtId: district.id,
+            code: constData.code,
+            name: constData.name,
+            nameHi: constData.nameHi,
+            type: constData.type,
+            totalVoters: constData.totalVoters
+          }
+        });
+        createdConstituencies[constituency.code] = constituency;
+
+        for (const stStation of constData.pollingStations) {
+          const station = await prisma.pollingStation.create({
+            data: {
+              constituencyId: constituency.id,
+              stationCode: stStation.stationCode,
+              name: stStation.name,
+              nameHi: stStation.nameHi,
+              address: stStation.address
+            }
+          });
+          createdStations[station.stationCode] = station;
+
+          for (const bData of stStation.booths) {
+            await prisma.pollingBooth.create({
+              data: {
+                stationId: station.id,
+                boothNumber: bData.boothNumber
+              }
+            });
+          }
+        }
+      }
     }
-  });
+  }
 
-  const varanasiPC = await prisma.constituency.create({
-    data: {
-      districtId: varanasiDistrict.id,
-      code: "PC02-UP",
-      name: "Varanasi",
-      nameHi: "वाराणसी",
-      type: "PARLIAMENTARY",
-      totalVoters: 1850000
-    }
-  });
+  console.log(`Geographic master hierarchy seeded successfully! Total States/UTs: ${Object.keys(createdStates).length}`);
 
-  const wayanadPC = await prisma.constituency.create({
-    data: {
-      districtId: wayanadDistrict.id,
-      code: "PC03-KL",
-      name: "Wayanad",
-      nameHi: "वायनाड",
-      type: "PARLIAMENTARY",
-      totalVoters: 1380000
-    }
-  });
-
-  const newDelhiPC = await prisma.constituency.create({
-    data: {
-      districtId: newDelhiDistrict.id,
-      code: "PC04-DL",
-      name: "New Delhi",
-      nameHi: "नई दिल्ली",
-      type: "PARLIAMENTARY",
-      totalVoters: 1420000
-    }
-  });
-
-  const blrSouthPC = await prisma.constituency.create({
-    data: {
-      districtId: blrDistrict.id,
-      code: "PC05-KA",
-      name: "Bengaluru South",
-      nameHi: "बेंगलुरु दक्षिण",
-      type: "PARLIAMENTARY",
-      totalVoters: 2010000
-    }
-  });
-
-  // 4. Polling Stations
-  const stationMumbai = await prisma.pollingStation.create({
-    data: {
-      constituencyId: mumbaiSouthPC.id,
-      stationCode: "ST-MH-01",
-      name: "St. Xavier High School, Dhobi Talao",
-      nameHi: "सेंट जेवियर्स हाई स्कूल, धोबी तलाव",
-      address: "5, Mahapalika Marg, Mumbai, Maharashtra 400001"
-    }
-  });
-
-  const stationVaranasi = await prisma.pollingStation.create({
-    data: {
-      constituencyId: varanasiPC.id,
-      stationCode: "ST-UP-01",
-      name: "Central Hindu Boys School, Kamachha",
-      nameHi: "सेंट्रल हिंदू बॉयज स्कूल, कामाच्छा",
-      address: "Kamachha, Varanasi, Uttar Pradesh 221010"
-    }
-  });
-
-  const stationWayanad = await prisma.pollingStation.create({
-    data: {
-      constituencyId: wayanadPC.id,
-      stationCode: "ST-KL-01",
-      name: "St. Joseph Higher Secondary School",
-      nameHi: "सेंट जोसेफ हायर सेकेंडरी स्कूल",
-      address: "Sultan Bathery, Wayanad, Kerala 673592"
-    }
-  });
-
-  // 5. Polling Booths
-  const boothMumbai1 = await prisma.pollingBooth.create({
-    data: { stationId: stationMumbai.id, boothNumber: 1 }
-  });
-  const boothVaranasi1 = await prisma.pollingBooth.create({
-    data: { stationId: stationVaranasi.id, boothNumber: 1 }
-  });
-
-  // 6. Parties
+  // 2. Political Parties Master Data
+  console.log("Seeding National & Regional Political Parties...");
   const bepParty = await prisma.party.create({
     data: {
       name: "Bharatiya Ekta Party",
@@ -193,7 +138,8 @@ async function main() {
     }
   });
 
-  // 7. Election
+  // 3. National General Election Creation
+  console.log("Creating 18th Lok Sabha General Elections 2026...");
   const election2026 = await prisma.election.create({
     data: {
       title: "18th Lok Sabha General Elections 2026",
@@ -207,104 +153,55 @@ async function main() {
     }
   });
 
-  // 8. Candidates
-  // Mumbai South Candidates
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: mumbaiSouthPC.id,
-      partyId: bepParty.id,
-      fullName: "Devendra Shinde",
-      fullNameHi: "देवेंद्र शिंदे",
-      ballotOrder: 1
-    }
-  });
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: mumbaiSouthPC.id,
-      partyId: npaParty.id,
-      fullName: "Milind Kadam",
-      fullNameHi: "मिलिंद कदम",
-      ballotOrder: 2
-    }
-  });
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: mumbaiSouthPC.id,
-      partyId: sjpParty.id,
-      fullName: "Prakash Thorat",
-      fullNameHi: "प्रकाश थोरात",
-      ballotOrder: 3
-    }
-  });
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: mumbaiSouthPC.id,
-      fullName: "NONE OF THE ABOVE (NOTA)",
-      fullNameHi: "इनमें से कोई नहीं (नोटा)",
-      isNota: true,
-      ballotOrder: 4
-    }
-  });
+  // 4. Register Candidates across ALL Constituencies in database
+  console.log("Registering Candidates across ALL Parliamentary Constituencies...");
 
-  // Varanasi Candidates
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: varanasiPC.id,
-      partyId: bepParty.id,
-      fullName: "Narendra Das",
-      fullNameHi: "नरेन्द्र दास",
-      ballotOrder: 1
-    }
-  });
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: varanasiPC.id,
-      partyId: npaParty.id,
-      fullName: "Ajay Rai",
-      fullNameHi: "अजय राय",
-      ballotOrder: 2
-    }
-  });
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: varanasiPC.id,
-      fullName: "NONE OF THE ABOVE (NOTA)",
-      fullNameHi: "इनमें से कोई नहीं (नोटा)",
-      isNota: true,
-      ballotOrder: 3
-    }
-  });
+  const partyList = [bepParty, npaParty, sjpParty, dsfParty];
+  const candidateFirstNames = ["Devendra", "Rahul", "Narendra", "Anand", "Suresh", "Priya", "Sunita", "Amit", "Kavita", "Rajesh", "Vikram", "Meenakshi", "Rohan", "Smriti"];
+  const candidateLastNames = ["Sharma", "Nair", "Das", "Patel", "Shinde", "Verma", "Kumar", "Swamy", "Banerjee", "Singh", "Yadav", "Rao", "Reddy", "Thorat"];
 
-  // Wayanad Candidates
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: wayanadPC.id,
-      partyId: npaParty.id,
-      fullName: "Rahul Nair",
-      fullNameHi: "राहुल नायर",
-      ballotOrder: 1
-    }
-  });
-  await prisma.candidate.create({
-    data: {
-      electionId: election2026.id,
-      constituencyId: wayanadPC.id,
-      partyId: bepParty.id,
-      fullName: "K. Surendran",
-      fullNameHi: "के. सुरेन्द्रन",
-      ballotOrder: 2
-    }
-  });
+  let candCounter = 1;
 
-  // 9. Users
+  for (const cCode of Object.keys(createdConstituencies)) {
+    const constituency = createdConstituencies[cCode];
+    const constName = constituency.name;
+
+    // Seed 3 Party Candidates + 1 NOTA per constituency
+    for (let pIdx = 0; pIdx < 3; pIdx++) {
+      const party = partyList[(candCounter + pIdx) % partyList.length];
+      const fn = candidateFirstNames[(candCounter * 3 + pIdx) % candidateFirstNames.length];
+      const ln = candidateLastNames[(candCounter * 7 + pIdx) % candidateLastNames.length];
+
+      await prisma.candidate.create({
+        data: {
+          electionId: election2026.id,
+          constituencyId: constituency.id,
+          partyId: party.id,
+          fullName: `${fn} ${ln}`,
+          fullNameHi: `${fn} ${ln}`,
+          ballotOrder: pIdx + 1
+        }
+      });
+    }
+
+    // Add NOTA Candidate for each constituency
+    await prisma.candidate.create({
+      data: {
+        electionId: election2026.id,
+        constituencyId: constituency.id,
+        fullName: "NONE OF THE ABOVE (NOTA)",
+        fullNameHi: "इनमें से कोई नहीं (नोटा)",
+        isNota: true,
+        ballotOrder: 4
+      }
+    });
+
+    candCounter++;
+  }
+
+  // 5. System Users (Super Admin, Admins, Polling Officers, Voters)
+  console.log("Creating System Officers & Demo Voters...");
+
   // Super Admin
   await prisma.user.create({
     data: {
@@ -318,7 +215,11 @@ async function main() {
     }
   });
 
-  // Election Officer Admin
+  // Admin Officer (Maharashtra)
+  const mhState = createdStates["MH"];
+  const mumbaiSouthPC = createdConstituencies["PC01-MH"];
+  const stationMumbai = createdStations["ST-MH-01"];
+
   await prisma.user.create({
     data: {
       epicNumber: "EPIC000001",
@@ -327,12 +228,12 @@ async function main() {
       phone: "+91-9876500001",
       passwordHash: passwordHash,
       role: "ADMIN",
-      stateId: mhState.id,
-      constituencyId: mumbaiSouthPC.id
+      stateId: mhState?.id,
+      constituencyId: mumbaiSouthPC?.id
     }
   });
 
-  // Polling Officer Mumbai
+  // Polling Officer (Mumbai South)
   const pollingOfficerMumbai = await prisma.user.create({
     data: {
       epicNumber: "EPIC000002",
@@ -341,20 +242,14 @@ async function main() {
       phone: "+91-9876500002",
       passwordHash: passwordHash,
       role: "POLLING_OFFICER",
-      stateId: mhState.id,
-      constituencyId: mumbaiSouthPC.id,
-      stationId: stationMumbai.id,
+      stateId: mhState?.id,
+      constituencyId: mumbaiSouthPC?.id,
+      stationId: stationMumbai?.id,
       boothNumber: 1
     }
   });
 
-  // Update booth officer link
-  await prisma.pollingBooth.update({
-    where: { id: boothMumbai1.id },
-    data: { officerUserId: pollingOfficerMumbai.id }
-  });
-
-  // Auditor
+  // National Auditor
   await prisma.user.create({
     data: {
       epicNumber: "EPIC000004",
@@ -366,77 +261,80 @@ async function main() {
     }
   });
 
-  // Demo Voters
-  await prisma.user.create({
+  // Demo Voters across different States
+  const upState = createdStates["UP"];
+  const varanasiPC = createdConstituencies["PC02-UP"];
+  const stationVaranasi = createdStations["ST-UP-01"];
+
+  const klState = createdStates["KL"];
+  const wayanadPC = createdConstituencies["PC03-KL"];
+  const stationWayanad = createdStations["ST-KL-01"];
+
+  const demoVoters = [
+    { epic: "EPIC100001", name: "Rajesh Kumar Sharma", email: "voter.rajesh@demo.in", phone: "+91-9876510001", state: mhState, pc: mumbaiSouthPC, station: stationMumbai },
+    { epic: "EPIC100002", name: "Priya Verma", email: "voter.priya@demo.in", phone: "+91-9876510002", state: mhState, pc: mumbaiSouthPC, station: stationMumbai },
+    { epic: "EPIC100003", name: "Amit Patel", email: "voter.amit@demo.in", phone: "+91-9876510003", state: upState, pc: varanasiPC, station: stationVaranasi },
+    { epic: "EPIC100004", name: "Sunita Devi", email: "voter.sunita@demo.in", phone: "+91-9876510004", state: upState, pc: varanasiPC, station: stationVaranasi },
+    { epic: "EPIC100005", name: "Anish Kurup", email: "voter.anish@demo.in", phone: "+91-9876510005", state: klState, pc: wayanadPC, station: stationWayanad }
+  ];
+
+  for (const dv of demoVoters) {
+    if (dv.state && dv.pc) {
+      await prisma.user.create({
+        data: {
+          epicNumber: dv.epic,
+          aadhaarHash: `AADHAAR-HASH-${dv.epic.slice(-4)}-${Math.floor(1000 + Math.random() * 9000)}`,
+          fullName: dv.name,
+          email: dv.email,
+          phone: dv.phone,
+          passwordHash: voterPasswordHash,
+          role: "VOTER",
+          stateId: dv.state.id,
+          constituencyId: dv.pc.id,
+          stationId: dv.station ? dv.station.id : null,
+          boothNumber: 1
+        }
+      });
+    }
+  }
+
+  // 6. Initial Seed Votes across multiple States for realistic initial live tally
+  console.log("Simulating realistic initial baseline votes across constituencies...");
+  const allCandidates = await prisma.candidate.findMany({ include: { constituency: true } });
+
+  for (let i = 0; i < 150; i++) {
+    const cand = allCandidates[i % allCandidates.length];
+    const timestamp = Date.now() - i * 10000;
+    const receiptHash = `BMM-INIT-${cand.id.slice(0, 4)}-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    await prisma.anonymousVote.create({
+      data: {
+        electionId: election2026.id,
+        constituencyId: cand.constituencyId,
+        candidateId: cand.isNota ? null : cand.id,
+        hashReceipt: receiptHash,
+        tamperCheckHash: `HASH-${receiptHash}-${election2026.id}`
+      }
+    });
+  }
+
+  // Genesis Audit Log entry
+  await prisma.auditLog.create({
     data: {
-      epicNumber: "EPIC100001",
-      aadhaarHash: "AADHAAR-HASH-8832-9910",
-      fullName: "Rajesh Kumar Sharma",
-      email: "voter.rajesh@demo.in",
-      phone: "+91-9876510001",
-      passwordHash: voterPasswordHash,
-      role: "VOTER",
-      stateId: mhState.id,
-      constituencyId: mumbaiSouthPC.id,
-      stationId: stationMumbai.id,
-      boothNumber: 1
+      action: "DATABASE_MASTER_GEO_SEEDED",
+      entityType: "SYSTEM",
+      entityId: election2026.id,
+      detailsHash: "0000000000000000000000000000000000000000000000000000000000000000",
+      previousHash: "GENESIS_HASH_MASTER_INDIA_GEO_2026"
     }
   });
 
-  await prisma.user.create({
-    data: {
-      epicNumber: "EPIC100002",
-      aadhaarHash: "AADHAAR-HASH-1123-5544",
-      fullName: "Priya Verma",
-      email: "voter.priya@demo.in",
-      phone: "+91-9876510002",
-      passwordHash: voterPasswordHash,
-      role: "VOTER",
-      stateId: mhState.id,
-      constituencyId: mumbaiSouthPC.id,
-      stationId: stationMumbai.id,
-      boothNumber: 1
-    }
-  });
-
-  await prisma.user.create({
-    data: {
-      epicNumber: "EPIC100003",
-      aadhaarHash: "AADHAAR-HASH-9988-7766",
-      fullName: "Amit Patel",
-      email: "voter.amit@demo.in",
-      phone: "+91-9876510003",
-      passwordHash: voterPasswordHash,
-      role: "VOTER",
-      stateId: upState.id,
-      constituencyId: varanasiPC.id,
-      stationId: stationVaranasi.id,
-      boothNumber: 1
-    }
-  });
-
-  await prisma.user.create({
-    data: {
-      epicNumber: "EPIC100004",
-      aadhaarHash: "AADHAAR-HASH-4433-2211",
-      fullName: "Sunita Devi",
-      email: "voter.sunita@demo.in",
-      phone: "+91-9876510004",
-      passwordHash: voterPasswordHash,
-      role: "VOTER",
-      stateId: upState.id,
-      constituencyId: varanasiPC.id,
-      stationId: stationVaranasi.id,
-      boothNumber: 1
-    }
-  });
-
-  console.log("Database Seed Completed Successfully!");
+  console.log("Database Seed Completed Successfully! All 36 States/UTs populated with candidates and baseline votes.");
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("Database Seeding Error:", e);
     process.exit(1);
   })
   .finally(async () => {
