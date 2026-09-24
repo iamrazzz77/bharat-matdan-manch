@@ -317,7 +317,7 @@ export default function DigitalBallotModal({
                   Change Selection
                 </button>
                 <button
-                  onClick={handleConfirmVote}
+                  onClick={() => handleConfirmVote()}
                   disabled={isCasting}
                   className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-green-700 hover:from-emerald-500 hover:to-green-600 text-white font-extrabold rounded-xl text-xs shadow-lg transition flex items-center gap-2"
                 >

@@ -7,10 +7,11 @@ export async function POST(req: Request) {
   try {
     const session = getAuthSession();
     const userId = session?.userId || "voter-demo-1";
-    const { electionId, candidateId, pollingType } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { electionId = "demo-2026", candidateId, pollingType, forceDemo, resetDemo } = body;
 
     const timestamp = Date.now();
-    const receiptHash = generateVoteReceipt(userId, electionId || "demo-2026", timestamp);
+    const receiptHash = generateVoteReceipt(userId, electionId, timestamp);
 
     let constituencyName = "Constituency";
     let candidateName = candidateId ? "Candidate Choice" : "NONE OF THE ABOVE (NOTA)";
@@ -21,21 +22,20 @@ export async function POST(req: Request) {
         include: { constituency: true }
       });
 
-      if (user && user.constituency) {
-        constituencyName = user.constituency.name;
-      }
-
-      if (candidateId) {
-        const candidateRecord = await prisma.candidate.findUnique({
-          where: { id: candidateId },
-          include: { party: true }
-        });
-        if (candidateRecord) {
-          candidateName = `${candidateRecord.fullName} (${candidateRecord.party?.shortCode || "IND"})`;
+      if (user) {
+        if (user.constituency) {
+          constituencyName = user.constituency.name;
         }
-      }
 
-        const { forceDemo, resetDemo } = await req.json().catch(() => ({}));
+        if (candidateId) {
+          const candidateRecord = await prisma.candidate.findUnique({
+            where: { id: candidateId },
+            include: { party: true }
+          });
+          if (candidateRecord) {
+            candidateName = `${candidateRecord.fullName} (${candidateRecord.party?.shortCode || "IND"})`;
+          }
+        }
 
         const existingParticipation = await prisma.voterParticipation.findUnique({
           where: {
@@ -48,7 +48,6 @@ export async function POST(req: Request) {
 
         if (existingParticipation) {
           if (forceDemo || resetDemo) {
-            // Demo reset mode: remove previous lock to allow re-testing
             await prisma.voterParticipation.delete({
               where: { id: existingParticipation.id }
             }).catch(() => {});
@@ -79,7 +78,7 @@ export async function POST(req: Request) {
           prisma.anonymousVote.create({
             data: {
               electionId: electionId,
-              constituencyId: user.constituencyId,
+              constituencyId: user.constituencyId || "constituency-mumbai-south",
               candidateId: candidateId || null,
               hashReceipt: receiptHash,
               tamperCheckHash: sha256(receiptHash + electionId)
